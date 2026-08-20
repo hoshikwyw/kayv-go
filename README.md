@@ -67,6 +67,32 @@ src/
   pages/                   HomePage (feed), PostPage, LoginPage, AdminDashboard
 ```
 
+## Tests
+
+[Vitest](vitest.config.ts) + Testing Library, jsdom environment. 40 tests, no
+network: `src/test/supabase.ts` provides a proxy-based stand-in for the
+PostgREST query builder that records every call in the chain, so tests assert on
+the exact payload sent to Supabase.
+
+```bash
+npm test              # single run
+npm run test:watch
+npm run test:coverage
+```
+
+`.env.test` holds dummy Supabase credentials so the client can be constructed;
+every call is mocked.
+
+What is covered:
+
+| Area | Guards against |
+| --- | --- |
+| `uploadImages` | wrong upload path, lost file extension, a partial batch being saved |
+| `deleteImages` | deleting objects from another bucket, cleanup failures surfacing as errors |
+| `usePosts` | wrong page offsets, duplicate rows on load-more, a stale filter overwriting results |
+| `PostForm` | untrimmed or empty-string fields, inserting after a failed upload, ownership reassignment on edit, photos deleted before the row is saved |
+| `ProtectedRoute` | a non-admin reaching the dashboard, deciding access before the profile has loaded |
+
 ## PWA
 
 The app is installable and works offline. Built with `vite-plugin-pwa`
@@ -113,5 +139,6 @@ npm run dev      # dev server
 npm run build    # tsc -b && vite build
 npm run preview  # serve dist/ (the only way to exercise the service worker)
 npm run icons    # regenerate PWA icons
+npm test         # run the test suite
 npx oxlint src   # lint
 ```
