@@ -39,7 +39,7 @@ Vite only reads env vars at startup — restart the dev server after editing.
 
 | Route | What it does |
 | --- | --- |
-| `/` | Public blog feed - grid of posts, category filter, photo lightbox |
+| `/` | Public blog feed - paginated grid, category filter, photo lightbox |
 | `/post/:id` | Single post - full content and every photo |
 | `/login` | Email + password sign-in |
 | `/admin` | Protected dashboard - create, edit and delete posts (requires `profiles.is_admin = true`) |
@@ -60,7 +60,7 @@ src/
     admin/StarRatingInput.tsx
     blog/PostCard.tsx      one post: badge, stars, location, gallery, content
     blog/ImageGallery.tsx  responsive photo grid + keyboard-driven lightbox
-  hooks/usePosts.ts        feed query, optionally filtered by category
+  hooks/usePosts.ts        paginated feed query, optionally filtered by category
   hooks/usePost.ts         single post by id, with a not-found state
   lib/uploadImages.ts      validation + parallel upload to Storage
   lib/deleteImages.ts      public URL -> object path, best-effort cleanup

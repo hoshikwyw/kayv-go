@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { SiteHeader } from '../components/SiteHeader'
+import { Spinner } from '../components/Spinner'
 import { PostCard } from '../components/blog/PostCard'
 import { PostCardSkeleton } from '../components/blog/PostCardSkeleton'
 import { usePosts } from '../hooks/usePosts'
@@ -13,7 +14,7 @@ const FILTERS: { value: CategoryFilter; label: string }[] = [
 
 export default function HomePage() {
   const [filter, setFilter] = useState<CategoryFilter>('all')
-  const { posts, loading, error, refetch } = usePosts(filter)
+  const { posts, total, loading, loadingMore, error, hasMore, loadMore, refetch } = usePosts(filter)
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -76,11 +77,31 @@ export default function HomePage() {
               : `Nothing filed under ${CATEGORY_LABELS[filter]} yet.`}
           </p>
         ) : (
-          <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-2">
-            {posts.map((post) => (
-              <PostCard key={post.id} post={post} />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-2">
+              {posts.map((post) => (
+                <PostCard key={post.id} post={post} />
+              ))}
+            </div>
+
+            <div className="mt-10 flex flex-col items-center gap-3">
+              <p aria-live="polite" className="text-sm text-slate-500">
+                Showing {posts.length} of {total} post{total === 1 ? '' : 's'}
+              </p>
+
+              {hasMore && (
+                <button
+                  type="button"
+                  onClick={loadMore}
+                  disabled={loadingMore}
+                  className="flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {loadingMore && <Spinner className="h-4 w-4" label="Loading more posts" />}
+                  {loadingMore ? 'Loading...' : 'Load more'}
+                </button>
+              )}
+            </div>
+          </>
         )}
       </main>
 
