@@ -67,11 +67,51 @@ src/
   pages/                   HomePage (feed), PostPage, LoginPage, AdminDashboard
 ```
 
+## PWA
+
+The app is installable and works offline. Built with `vite-plugin-pwa`
+(Workbox) - see the `VitePWA` block in [`vite.config.ts`](vite.config.ts).
+
+- **App shell** is precached on first visit.
+- **Post photos** use cache-first. Every upload gets a fresh uuid, so a cached
+  image can never be stale.
+- **Feed queries** use network-first with a 5s timeout, falling back to the last
+  successful response. Auth endpoints are deliberately never cached.
+- **Updates** are opt-in: a new build shows a "Reload" prompt rather than
+  swapping the page out mid-scroll.
+
+The service worker only runs in a real build - `npm run dev` does not register
+one. To test it:
+
+```bash
+npm run build && npm run preview
+```
+
+Then open DevTools → Application → Service Workers / Manifest. Installability
+also requires HTTPS, which you get on Vercel and on `localhost`.
+
+### Icons
+
+`public/icons/*` are generated placeholders:
+
+```bash
+npm run icons     # node scripts/generate-icons.mjs
+```
+
+Replace them with real artwork at the same filenames and sizes (192, 512,
+maskable 512, apple-touch 180) when you have it - no config change needed.
+
+### Capacitor
+
+Not wired up yet. The PWA above is browser-installable on Android and iOS;
+Capacitor is only needed for app-store distribution and native APIs.
+
 ## Scripts
 
 ```bash
 npm run dev      # dev server
 npm run build    # tsc -b && vite build
-npm run preview  # serve dist/
+npm run preview  # serve dist/ (the only way to exercise the service worker)
+npm run icons    # regenerate PWA icons
 npx oxlint src   # lint
 ```

@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './context/AuthProvider'
 import { ProtectedRoute } from './components/ProtectedRoute'
+import { ReloadPrompt } from './components/ReloadPrompt'
 import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
 import PostPage from './pages/PostPage'
@@ -24,6 +25,7 @@ export default function App() {
           />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        <ReloadPrompt />
       </AuthProvider>
     </BrowserRouter>
   )
