@@ -1,10 +1,22 @@
 import { useRegisterSW } from 'virtual:pwa-register/react'
+import { isNativePlatform } from '../lib/nativeCamera'
+
+/**
+ * Inside the Capacitor shell the bundled assets are already local and updates
+ * ship through the app store, so registering a service worker would only add a
+ * second, competing cache. Mounting the inner component is what registers it,
+ * so the guard has to live out here.
+ */
+export function ReloadPrompt() {
+  if (isNativePlatform()) return null
+  return <ServiceWorkerPrompt />
+}
 
 /**
  * Shown when a new build has been installed by the service worker, and once
  * when the app first becomes available offline. Both dismissible.
  */
-export function ReloadPrompt() {
+function ServiceWorkerPrompt() {
   const {
     offlineReady: [offlineReady, setOfflineReady],
     needRefresh: [needRefresh, setNeedRefresh],

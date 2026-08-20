@@ -127,10 +127,37 @@ npm run icons     # node scripts/generate-icons.mjs
 Replace them with real artwork at the same filenames and sizes (192, 512,
 maskable 512, apple-touch 180) when you have it - no config change needed.
 
-### Capacitor
+Capacitor uses these too - see the section below.
 
-Not wired up yet. The PWA above is browser-installable on Android and iOS;
-Capacitor is only needed for app-store distribution and native APIs.
+## Capacitor (Android app shell)
+
+The same `dist/` build runs inside a Capacitor webview. Config lives in
+[`capacitor.config.ts`](capacitor.config.ts); the Android project is in
+`android/`.
+
+```bash
+npm run cap:sync      # build, then copy the web assets into android/
+npm run cap:android    # the above, then open Android Studio
+```
+
+Building an APK needs Android Studio and a JDK - Capacitor only scaffolds and
+syncs the project. iOS is not set up (it needs macOS); on a Mac it is
+`npm i -D @capacitor/ios && npx cap add ios`.
+
+**Native camera.** Inside the shell the photo field swaps the file input for
+"Take photo" and "Choose photos", backed by `@capacitor/camera`
+([`src/lib/nativeCamera.ts`](src/lib/nativeCamera.ts)). Photos are converted to
+`File` objects, so they take the same upload path as browser uploads. In any
+browser - including the installed PWA - nothing changes.
+
+The service worker is deliberately not registered inside the shell: the assets
+are already local and updates ship through the store, so a second cache would
+only get in the way.
+
+**Note on the anon key.** `npm run build` inlines `VITE_SUPABASE_*` into the
+bundle, which then ships inside the APK. That is expected for the anon key -
+RLS is what protects your data, so keep the policies in
+[`supabase/policies.sql`](supabase/policies.sql) tight.
 
 ## Scripts
 
@@ -140,5 +167,6 @@ npm run build    # tsc -b && vite build
 npm run preview  # serve dist/ (the only way to exercise the service worker)
 npm run icons    # regenerate PWA icons
 npm test         # run the test suite
+npm run cap:sync # build and copy into the Android project
 npx oxlint src   # lint
 ```
