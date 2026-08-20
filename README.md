@@ -39,7 +39,7 @@ Vite only reads env vars at startup — restart the dev server after editing.
 
 | Route | What it does |
 | --- | --- |
-| `/` | Public blog feed (placeholder for now) |
+| `/` | Public blog feed - grid of posts, category filter, photo lightbox |
 | `/login` | Email + password sign-in |
 | `/admin` | Protected dashboard — requires `profiles.is_admin = true` |
 
@@ -56,8 +56,11 @@ src/
     admin/PostForm.tsx     create a post (upload photos, then insert)
     admin/ImagePicker.tsx  multi-file input with previews
     admin/StarRatingInput.tsx
+    blog/PostCard.tsx      one post: badge, stars, location, gallery, content
+    blog/ImageGallery.tsx  responsive photo grid + keyboard-driven lightbox
+  hooks/usePosts.ts        feed query, optionally filtered by category
   lib/uploadImages.ts      validation + parallel upload to Storage
-  pages/                   HomePage, LoginPage, AdminDashboard
+  pages/                   HomePage (feed), LoginPage, AdminDashboard
 ```
 
 ## Scripts
