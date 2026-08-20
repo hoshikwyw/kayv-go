@@ -3,6 +3,7 @@ import { AuthProvider } from './context/AuthProvider'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
+import PostPage from './pages/PostPage'
 import AdminDashboard from './pages/AdminDashboard'
 
 export default function App() {
@@ -11,6 +12,7 @@ export default function App() {
       <AuthProvider>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/post/:id" element={<PostPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route
             path="/admin"

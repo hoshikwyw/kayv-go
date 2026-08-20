@@ -3,12 +3,20 @@ import { useCallback, useEffect, useState } from 'react'
 type ImageGalleryProps = {
   images: string[]
   title: string
+  /**
+   * Thumbnails to render before collapsing the rest into a "+N" tile.
+   * The detail page passes Infinity so nothing is hidden.
+   */
+  maxThumbnails?: number
 }
 
-/** How many thumbnails to render before collapsing the rest into "+N". */
-const MAX_THUMBNAILS = 5
+const DEFAULT_MAX_THUMBNAILS = 5
 
-export function ImageGallery({ images, title }: ImageGalleryProps) {
+export function ImageGallery({
+  images,
+  title,
+  maxThumbnails = DEFAULT_MAX_THUMBNAILS,
+}: ImageGalleryProps) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
 
   const close = useCallback(() => setLightboxIndex(null), [])
@@ -42,7 +50,7 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
 
   if (images.length === 0) return null
 
-  const visible = images.slice(0, MAX_THUMBNAILS)
+  const visible = images.slice(0, maxThumbnails)
   const hidden = images.length - visible.length
 
   return (
